@@ -1,1 +1,1 @@
-# Open-Notification
+# OpenNotification
