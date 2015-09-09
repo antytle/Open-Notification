@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+require "slack"
+
+commitMessage = `git log -1 --name-status --pretty=format:"Name:%an\nComment:\t\t%s\nModified ────────────────\n"`
+
+currentBranch = `git branch --contains=HEAD`
+
+committerName = commitMessage.match(/(?<=Name:)[0-9a-zA-Z_\-]{1,}(?=\nComment:)/)
+replaceMessage = commitMessage.gsub(/(?=Comment:)/, "Branch:\t\t\t#{currentBranch}")
+replaceMessage = replaceMessage.gsub(/Name:[0-9a-zA-Z_\-]{1,}\n(?=Branch:)/, "")
+
+
+Slack.configure do |config|
+	config.token = 'Slack WEB API Authentication(トークン)'
+
+Slack.chat_postMessage(text: "#{replaceMessage}\n────────────────────",  username: "任意の名前", channel: '#チャンネル名または@ユーザーネーム', icon_url: 'アイコン画像URL')
